@@ -89,23 +89,21 @@ function makeAllPlays() {
 queueSongsPlay.forEach((element) => {
     element.addEventListener("click", (e) => {
         makeAllPlays()
-        songIndex = parseInt(e.target.id)
-        // console.log(songIndex)
-        // audioElement.src = `audio/song${songIndex}.mp3`
-        // audioElement.play();
+        // songIndex = parseInt(e.target.id)
+        const newSongIndex = parseInt(e.target.id);
+        const currentSongIndex = songIndex;
         let queuePlayIcon = e.currentTarget.getElementsByClassName("queue-play")[0];
-        // queuePlayIcon.classList.toggle("fa-play");
-        // queuePlayIcon.classList.toggle("fa-pause");
-
-        if (audioElement.paused) {
+        if (newSongIndex !== currentSongIndex || audioElement.paused) {
+            songIndex = newSongIndex;
             audioElement.src = `audio/song${songIndex}.mp3`;
             audioElement.play();
             queuePlayIcon.classList.remove("fa-play");
             queuePlayIcon.classList.add("fa-pause");
             play.classList.remove("fa-play-circle");
             play.classList.add("fa-pause-circle");
-        } else {
-            console.log(songIndex)
+        }
+        else if (!audioElement.paused) {
+            // console.log(songIndex)
             audioElement.pause();
             queuePlayIcon.classList.remove("fa-pause");
             queuePlayIcon.classList.add("fa-play");
@@ -115,26 +113,8 @@ queueSongsPlay.forEach((element) => {
         document.getElementById("player-song-name").innerHTML = songs[songIndex - 1].songName
         document.getElementById("player-singer-name").innerHTML = songs[songIndex - 1].singer
         document.getElementById("player-song-cover-img").src = songs[songIndex - 1].coverPath
-        // play.classList.remove("fa-play-circle")
-        // play.classList.add("fa-pause-circle")
     });
 });
-
-// PLAY PAUSE PLAYER BUTTON
-queueSongsPlay[0].addEventListener("click", () => {
-    if (audioElement.paused || audioElement.currentTime <= 0) {
-        audioElement.play();
-        play.classList.remove("fa-play-circle")
-        play.classList.add("fa-pause-circle")
-    } else {
-        audioElement.pause();
-        play.classList.remove("fa-pause-circle")
-        play.classList.add("fa-play-circle")
-    }
-});
-
-
-
 
 // NEXT SONG CONTROL BUTTON 
 document.getElementsByClassName("fa-forward")[0].addEventListener("click", () => {
@@ -194,6 +174,25 @@ play.addEventListener("click", () => {
         play.classList.add("fa-play-circle")
     }
 });
+
+
+// AUDIO PLAYED AND PAUSED WITH SPACEBAR
+document.body.onkeyup = function (e) {
+    if (e.key == " " ||
+        e.code == "Space" ||
+        e.keyCode == 32
+    ) {
+        if (audioElement.paused || audioElement.currentTime <= 0) {
+            audioElement.play();
+            play.classList.remove("fa-play-circle")
+            play.classList.add("fa-pause-circle")
+        } else {
+            audioElement.pause();
+            play.classList.remove("fa-pause-circle")
+            play.classList.add("fa-play-circle")
+        }
+    }
+}
 
 // PROGRESS BAR RUNING ACCORDING TO SONG TIME
 audioElement.addEventListener("timeupdate", () => {
